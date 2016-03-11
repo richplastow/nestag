@@ -1,0 +1,47 @@
+{
+  "name": "nestag",
+  "version": "0.0.1",
+  "description": "Multiply linked list with tags, for spatial and nested data",
+  "main": "build/nestag.js",
+  "directories": {
+    "doc": "doc",
+    "test": "test",
+    "example": "usage"
+  },
+  "devDependencies": {
+    "apage": "latest",
+    "coffee-script": "latest",
+    "nodemon": "latest"
+  },
+  "dependencies": {
+  },
+  "keywords": [
+    "CoffeeScript",
+    "Literate CoffeeScript",
+    "Linked List",
+    "Doubly Linked List",
+    "Multiply Linked List",
+    "List",
+    "Nested",
+    "2D",
+    "3D",
+    "Data Structure",
+    "Tagged"
+    ],
+  "scripts": {
+    "hi": "open .; open index.html; open test/run-test.html; subl .",
+    "build": "node oopish/bin/oopish-build",
+    "doc": "node_modules/apage/bin/apage -i README.md doc/*.md -o index.html -p \"`cat node_modules/apage/build/plugin/*.js`\"",
+    "test": "node test/run-test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/richplastow/nestag.git"
+  },
+  "author": "Rich Plastow <rich@richplastow.com> (http://richplastow.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/richplastow/nestag/issues"
+  },
+  "homepage": "http://nestag.richplastow.com/"
+}
