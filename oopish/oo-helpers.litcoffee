@@ -22,6 +22,8 @@ Useful for reducing CoffeeScript’s verbose conditional syntax, eg:
       if c then t else f
 
 
+
+
 #### `oo.isU()`
 @todo description
 
@@ -29,11 +31,15 @@ Useful for reducing CoffeeScript’s verbose conditional syntax, eg:
       oo.U == typeof x
 
 
+
+
 #### `oo.isX()`
 @todo description
 
     oo.isX = (x) ->
       null == x
+
+
 
 
 #### `oo.type()`
@@ -52,12 +58,16 @@ when the variable being tested does not exist, `typeof foobar` will return
       ({}).toString.call(a).match(/\s([a-z0-9]+)/i)[1].toLowerCase()
 
 
+
+
 #### `oo.ex()`
 Exchanges a character from one set for its equivalent in another. To decompose 
 an accent, use `oo.ex(c, 'àáäâèéëêìíïîòóöôùúüûñç', 'aaaaeeeeiiiioooouuuunc')`
 
     oo.ex = (x, a, b) ->
       if -1 == pos = a.indexOf x then x else b.charAt pos
+
+
 
 
 #### `oo.has()`
@@ -67,11 +77,15 @@ Determines whether haystack contains a given needle. @todo arrays and objects
       if -1 != h.indexOf n then t else f
 
 
+
+
 #### `oo.uid()`
 Xx optional prefix. @todo description
 
     oo.uid = (p='id') ->
       p + '_' + ( Math.random().toString(36) + '00000000' ).substr 2,8
+
+
 
 
 #### `oo.uid62()`
@@ -107,12 +121,16 @@ Xx. @todo description
 
 Convert a property to one of XX kinds:
 
-    oo.define = (obj, name, value, kind) ->
-      switch kind
-        when 'constant'
-          Object.defineProperty obj, name, { value:value, enumerable:true }
-        when 'private'
-          Object.defineProperty obj, name, { value:value, enumerable:false }
+    if oo.ROBUSTABLE
+      oo.define = (obj, name, value, kind) ->
+        switch kind
+          when 'constant'
+            Object.defineProperty obj, name, { value:value, enumerable:true }
+          when 'private'
+            Object.defineProperty obj, name, { value:value, enumerable:false }
+    else
+      oo.define = (obj, name, value, kind) -> # legacy UAs
+        obj[name] = value
 
 
 
@@ -121,11 +139,14 @@ Convert a property to one of XX kinds:
 
 @todo describe
 
-    oo.lock = (obj) ->
-      for key in Object.keys obj
-        Object.defineProperty obj, key, { writable:false, configurable:false }
-      Object.preventExtensions obj
-      if obj.prototype and obj != obj.prototype then oo.lock obj.prototype
+    if oo.ROBUSTABLE
+      oo.lock = (obj) ->
+        for key in Object.keys obj
+          Object.defineProperty obj, key, { writable:false, configurable:false }
+        Object.preventExtensions obj
+        if obj.prototype and obj != obj.prototype then oo.lock obj.prototype
+    else
+      oo.lock = -> # legacy UAs
 
 
 
