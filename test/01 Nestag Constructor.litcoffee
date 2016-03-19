@@ -46,14 +46,14 @@ Prepare a test-instance.
       tudor.equal
 
 
-      "`Nestag::x` is the number `123`"
-      123
-      (nestag) -> nestag.x
+      "`Nestag::nest` is the number `9999`"
+      9999
+      (nestag) -> nestag.nest
 
 
-      "`Nestag::_x` is private, and is null"
-      null
-      (nestag) -> nestag[oo._]._x
+      "`Nestag::_locations` is private, and is an empty object"
+      0
+      (nestag) -> Object.keys(nestag[oo._]._locations).length
 
 
 

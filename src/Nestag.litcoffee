@@ -12,9 +12,10 @@ Nestag
 
 
 #### `constructor()`
-- `config <object> {}`       initial configuration
-  - `config.x <number> 123`  @todo describe
-- `<undefined>`              does not return anything
+- `config <object> {}`                           initial configuration
+  - `config.grid <array of integer|null> [2,2]`  defines dimensions and size
+  - `config.nest <integer> 9999`                 maximum nest-depth
+- `<undefined>`                                  does not return anything
 
       constructor: (config={}) ->
         M = '/nestag/src/Nestag.litcoffee
@@ -32,10 +33,23 @@ Public Properties
 -----------------
 
 
-#### `x <number> 123`
-From `config.x`, @todo describe
+#### `grid <array of integer or null> [null]`
+One element per dimension. If the element is a number, it defines the grid 
+extent in that direction. If the element is `null`, there is no fixed number of 
+locations in that direction @todo how does that work with coords?
 
-        @x = v 'x <number>', 123
+The default,`[2,2]`, is a 2D grid where each Location has four sub-Locations. 
+
+        @grid = v 'grid <array of integer|null>', [2,2]
+
+
+#### `nest <integer> 9999`
+The deepest number of nested levels allowed. You can set this to a very high 
+number, but the JavaScript runtime environment will hit a call-stack limit at 
+some point. Setting `nest` to 0 prevents any nesting, so only the top-level 
+Location can be used. 
+
+        @nest = v 'nest <integer>', 9999
 
 
 
@@ -48,10 +62,10 @@ Create `@[oo._]`, a non-enumerable property with an unguessable name.
         oo.define @, oo._, {}, 'private'
 
 
-#### `_x <null>`
-@todo describe
+#### `_locations <object>`
+Contains all Location instances currently held by this Nestag instance. 
 
-        @[oo._]._x = null
+        @[oo._]._locations = {}
 
 
 
@@ -63,70 +77,11 @@ Prevent properties being accidentally modified or added to the instance.
 
 
 
-Public Methods
---------------
+Public B.R.E.A.D. Methods
+-------------------------
 
 
-#### `xx()`
-- `yy <number> 123`  @todo describe
-- `<undefined>`      does not return anything
-
-@todo describe
-
-      xx: (yy) ->
-        M = '/nestag/src/Nestag.litcoffee
-          Nestag::xx()\n  '
-
-Check that the arguments are valid, or fallback to defaults if undefined. 
-
-        yy = oo.vArg M, yy, 'yy <number>', 123
-
-
-
-
-Public Static Functions
------------------------
-
-
-#### `xx()`
-- `yy <number> 123`  @todo describe
-- `<undefined>`      does not return anything
-
-@todo describe
-
-    Nestag.xx = (yy) ->
-      M = '/nestag/src/Nestag.litcoffee
-        Nestag.xx()\n  '
-
-Check that the arguments are valid, or fallback to defaults if undefined. 
-
-      yy = oo.vArg M, yy, 'yy <number>', 123
-
-
-
-
-
-Private Variables and Functions 
--------------------------------
-
-These have module-wide scope. Any code in the Nestag module can access them. 
-
-
-#### `x <null>`
-@todo describe
-
-    x = null
-
-
-#### `xx()`
-- `yy <number>`  @todo describe
-- `<undefined>`  does not return anything
-
-To simulate a private method, use `xx.call(@, yy)`. @todo describe
-
-    xx = (yy) ->
-      M = '/nestag/src/Nestag.litcoffee
-        xx()\n  '
+      #@todo
 
 
 

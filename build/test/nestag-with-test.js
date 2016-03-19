@@ -23,9 +23,7 @@ oo.V = "0.0.2" // project version, from package.json
 
 
 /*! Nestag 0.0.2 */
-var Nestag, SomeClass, Tudor, tudor, x, xx,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty,
+var Location, Nestag, Tudor, global_tags, tudor,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 oo.A = 'array';
@@ -374,6 +372,36 @@ oo.vObject = function(M, objName, obj) {
   };
 };
 
+Location = (function() {
+  Location.prototype.C = 'Location';
+
+  Location.prototype.toString = function() {
+    return '[object Location]';
+  };
+
+  function Location(config) {
+    var M, v;
+    if (config == null) {
+      config = {};
+    }
+    M = '/nestag/src/Location.litcoffee Location()\n  ';
+    v = oo.vObject(M, 'config', config);
+    this.coord = v('coord <string>');
+    this.cargo = v('parent <Location|null>');
+    v('tags <array of string|integer> []');
+    this.tags = 123;
+    this.ancestors = [];
+    this.neighbors = [];
+    this.corners = [];
+    if ('Location' === this.C) {
+      oo.lock(this);
+    }
+  }
+
+  return Location;
+
+})();
+
 Nestag = (function() {
   Nestag.prototype.C = 'Nestag';
 
@@ -388,154 +416,24 @@ Nestag = (function() {
     }
     M = '/nestag/src/Nestag.litcoffee Nestag()\n  ';
     v = oo.vObject(M, 'config', config);
-    this.x = v('x <number>', 123);
+    this.grid = v('grid <array of integer|null>', [2, 2]);
+    this.nest = v('nest <integer>', 9999);
     oo.define(this, oo._, {}, 'private');
-    this[oo._]._x = null;
+    this[oo._]._locations = {};
     if ('Nestag' === this.C) {
       oo.lock(this);
     }
   }
 
-  Nestag.prototype.xx = function(yy) {
-    var M;
-    M = '/nestag/src/Nestag.litcoffee Nestag::xx()\n  ';
-    return yy = oo.vArg(M, yy, 'yy <number>', 123);
-  };
-
   return Nestag;
 
 })();
 
-Nestag.xx = function(yy) {
-  var M;
-  M = '/nestag/src/Nestag.litcoffee Nestag.xx()\n  ';
-  return yy = oo.vArg(M, yy, 'yy <number>', 123);
-};
+global_tags = ['strict', 'skip'];
 
-x = null;
+global_tags.strict = 0;
 
-xx = function(yy) {
-  var M;
-  return M = '/nestag/src/Nestag.litcoffee xx()\n  ';
-};
-
-SomeClass = (function() {
-  SomeClass.prototype.C = 'SomeClass';
-
-  SomeClass.prototype.toString = function() {
-    return '[object SomeClass]';
-  };
-
-  function SomeClass(config) {
-    var M, v;
-    if (config == null) {
-      config = {};
-    }
-    M = '/nestag/src/SomeClass.litcoffee SomeClass()\n  ';
-    v = oo.vObject(M, 'config', config);
-    this.x = v('x <number>', 123);
-    oo.define(this, oo._, {}, 'private');
-    this[oo._]._x = null;
-    if ('SomeClass' === this.C) {
-      oo.lock(this);
-    }
-  }
-
-  SomeClass.prototype.xx = function(yy) {
-    var M;
-    M = '/nestag/src/SomeClass.litcoffee SomeClass::xx()\n  ';
-    return yy = oo.vArg(M, yy, 'yy <number>', 123);
-  };
-
-  return SomeClass;
-
-})();
-
-SomeClass.xx = function(yy) {
-  var M;
-  M = '/nestag/src/SomeClass.litcoffee SomeClass.xx()\n  ';
-  return yy = oo.vArg(M, yy, 'yy <number>', 123);
-};
-
-SomeClass.FirstSubClass = (function(superClass) {
-  extend(FirstSubClass, superClass);
-
-  FirstSubClass.prototype.C = 'SomeClass.FirstSubClass';
-
-  FirstSubClass.prototype.toString = function() {
-    return '[object SomeClass.FirstSubClass]';
-  };
-
-  function FirstSubClass(config) {
-    var M, v;
-    if (config == null) {
-      config = {};
-    }
-    M = '/nestag/src/SomeClass/FirstSubClass.litcoffee SomeClass.FirstSubClass()\n  ';
-    FirstSubClass.__super__.constructor.call(this, config);
-    v = oo.vObject(M, 'config', config);
-    this.x = v('x <number>', 123);
-    this[oo._]._x = null;
-    if ('SomeClass.FirstSubClass' === this.C) {
-      oo.lock(this);
-    }
-  }
-
-  FirstSubClass.prototype.xx = function(yy) {
-    var M;
-    M = '/nestag/src/SomeClass/FirstSubClass.litcoffee SomeClass::xx()\n  ';
-    return yy = oo.vArg(M, yy, 'yy <number>', 123);
-  };
-
-  return FirstSubClass;
-
-})(SomeClass);
-
-SomeClass.FirstSubClass.xx = function(yy) {
-  var M;
-  M = '/nestag/src/SomeClass/FirstSubClass.litcoffee SomeClass.FirstSubClass.xx()\n  ';
-  return yy = oo.vArg(M, yy, 'yy <number>', 123);
-};
-
-SomeClass.SecondSubClass = (function(superClass) {
-  extend(SecondSubClass, superClass);
-
-  SecondSubClass.prototype.C = 'SomeClass.SecondSubClass';
-
-  SecondSubClass.prototype.toString = function() {
-    return '[object SomeClass.SecondSubClass]';
-  };
-
-  function SecondSubClass(config) {
-    var M, v;
-    if (config == null) {
-      config = {};
-    }
-    M = '/nestag/src/SomeClass/SecondSubClass.litcoffee SomeClass.SecondSubClass()\n  ';
-    SecondSubClass.__super__.constructor.call(this, config);
-    v = oo.vObject(M, 'config', config);
-    this.x = v('x <number>', 123);
-    this[oo._]._x = null;
-    if ('SomeClass.SecondSubClass' === this.C) {
-      oo.lock(this);
-    }
-  }
-
-  SecondSubClass.prototype.xx = function(yy) {
-    var M;
-    M = '/nestag/src/SomeClass/SecondSubClass.litcoffee SomeClass::xx()\n  ';
-    return yy = oo.vArg(M, yy, 'yy <number>', 123);
-  };
-
-  return SecondSubClass;
-
-})(SomeClass);
-
-SomeClass.SecondSubClass.xx = function(yy) {
-  var M;
-  M = '/nestag/src/SomeClass/SecondSubClass.litcoffee SomeClass.SecondSubClass.xx()\n  ';
-  return yy = oo.vArg(M, yy, 'yy <number>', 123);
-};
+global_tags.skip = 1;
 
 Tudor = (function() {
   Tudor.prototype.I = 'Tudor';
@@ -881,10 +779,10 @@ tudor.add([
     return nestag.C;
   }, "`Nestag::toString()` is '[object Nestag]'", '[object Nestag]', function(nestag) {
     return nestag + '';
-  }, "Instance properties as expected", tudor.equal, "`Nestag::x` is the number `123`", 123, function(nestag) {
-    return nestag.x;
-  }, "`Nestag::_x` is private, and is null", null, function(nestag) {
-    return nestag[oo._]._x;
+  }, "Instance properties as expected", tudor.equal, "`Nestag::nest` is the number `9999`", 9999, function(nestag) {
+    return nestag.nest;
+  }, "`Nestag::_locations` is private, and is an empty object", 0, function(nestag) {
+    return Object.keys(nestag[oo._]._locations).length;
   }
 ]);
 
@@ -917,4 +815,3 @@ if (oo.F === typeof define && define.amd) {
   oo.G.Nestag = Nestag;
 }
 }).call(this,this);
-// Example vendor file. 
