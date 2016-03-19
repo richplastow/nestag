@@ -162,16 +162,23 @@ Validates an array.
 
     oo.vArray = (M, arr, signature, fallback) ->
 
-Get `types` and `rule` from the signature. 
+Get `types` and `rule` from the signature. @todo min and max array sizes
 
-        matches = signature.match /^<\[([|a-z]+)\s*(.*)\]>$/i
+        matches = signature.match /^<\[([|a-z]+)\s*(.*)\](\d+-\d+)?>$/i
         if ! matches then throw RangeError "/nestag/oopish/oo-helpers.litcoffee
           oo.vArray()\n  signature #{signature} is invalid"
-        [signature, types, rule] = matches
+        [signature, types, rule, limit] = matches
 
 Use the fallback, if needed. 
 
         if ! arr then return fallback
+
+Check the number of elements. 
+
+        if limit
+          [min, max] = limit.split '-'
+          if arr.length < min or arr.length > max
+            throw RangeError M + ".length is #{arr.length} (must be #{limit})"
 
 Step through each element in `arr`, and get its value’s type. 
 

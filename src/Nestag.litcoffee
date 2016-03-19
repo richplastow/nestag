@@ -13,9 +13,9 @@ Nestag
 
 #### `constructor()`
 - `config <object> {}`                           initial configuration
-  - `config.grid <array of integer|null> [2,2]`  defines dimensions and size
-  - `config.nest <integer> 9999`                 maximum nest-depth
-- `<undefined>`                                  does not return anything
+  - `config.grid <[integer 0-999999]1-24> [2,2]` defines dimensions and size
+  - `config.nest <integer 0-999999> 9999`        maximum nest-depth
+- `<undefined>`                                  does not return anything  
 
       constructor: (config={}) ->
         M = '/nestag/src/Nestag.litcoffee
@@ -33,14 +33,15 @@ Public Properties
 -----------------
 
 
-#### `grid <array of integer or null> [null]`
-One element per dimension. If the element is a number, it defines the grid 
-extent in that direction. If the element is `null`, there is no fixed number of 
-locations in that direction @todo how does that work with coords?
+#### `grid <[integer 0-999999]1-24> [null]`
+One integer per dimension. If the integer is zero, there is no fixed number of 
+locations in that direction @todo how does that work with coords? If the integer
+is greater than 0, it defines the grid extent in that direction. 
 
-The default,`[2,2]`, is a 2D grid where each Location has four sub-Locations. 
+The default is a 2D grid where each Location has four sub-Locations, `[2,2]`. 
 
-        @grid = v 'grid <array of integer|null>', [2,2]
+        @grid = oo.vArray(M + 'config.grid', config.grid,
+          '<[integer 0-999999]1-24>', [2,2])
 
 
 #### `nest <integer> 9999`
@@ -49,7 +50,7 @@ number, but the JavaScript runtime environment will hit a call-stack limit at
 some point. Setting `nest` to 0 prevents any nesting, so only the top-level 
 Location can be used. 
 
-        @nest = v 'nest <integer>', 9999
+        @nest = v 'nest <integer 0-999999>', 9999
 
 
 

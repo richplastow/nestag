@@ -12,11 +12,11 @@ Location
 
 
 #### `constructor()`
-- `config <object> {}`                          initial configuration
-  - `config.coord <string>`                     new Location’s coordinates
-  - `config.cargo <array of any> [undefined]`   must contain one or more element
-  - `config.tags <array of string|integer> []`  new Location’s tags
-- `<undefined>`                                 does not return anything
+- `config <object> {}`                   initial configuration
+  - `config.coord <string>`              new Location’s coordinates
+  - `config.cargo <[any]> [undefined]`   must contain one or more element
+  - `config.tags <[string|integer]> []`  new Location’s tags
+- `<undefined>`                          does not return anything  
 
       constructor: (config={}) ->
         M = '/nestag/src/Location.litcoffee
@@ -40,20 +40,22 @@ New Location’s coordinates. @todo describe in detail
         @coord = v 'coord <string>'
 
 
-#### `cargo <array of any> [undefined]`
+#### `cargo <[any]> [undefined]`
 A list of the new Location’s values. Must contain at least one element (even if
 that’s `undefined`). If a Location’s cargo elements are all deleted, the 
 Location itself is deleted. 
 
-        @cargo = v 'parent <Location|null>'
+        #@cargo = oo.vArray(M + 'config.cargo', config.cargo,
+        #  '<[any]>', [undefined])
 
 
-#### `tags <array of integer> []`
+#### `tags <[integer]> []`
 New Location’s tags, by identifier. These can be passed in by identifier or by 
 name. Where a name is not recognized, it’s recorded and assigned a globally 
 unique identifier. 
 
-        v 'tags <array of string|integer> []'
+        @tags = oo.vArray(M + 'config.tags', config.tags,
+          '<[integer 0-999999]>', [])
         @tags = 123 #@todo convert strings to integers
 
 
@@ -63,7 +65,7 @@ Other Public Properties
 -----------------------
 
 
-#### `ancestors <array of Location|null>`
+#### `ancestors <[Location|null]>`
 New Location’s containers. If tags are used, this becomes a ‘sparse array’. 
 
 - `ancestors[0]` is the direct parent of this Location, or `null` if this is the 
@@ -76,7 +78,7 @@ New Location’s containers. If tags are used, this becomes a ‘sparse array’
         @ancestors = []
 
 
-#### `neighbors <array of arrays of Location|null>`
+#### `neighbors <[arrays of Location|null]>`
 Other Locations neighboring this one. Does not record diagonals. 
 
 - A 1D Nestag has `neighbors[0]` for ‘previous’ and `neighbors[1]` for ‘next’
@@ -98,7 +100,7 @@ Within each top-level array is a sub-array which works similarly to the
         @neighbors = []
 
 
-#### `corners <array of arrays of Location|null>`
+#### `corners <[arrays of Location|null]>`
 Locations contained inside this one, positioned at each corner. 
 
 - A 1D Nestag has `corners[0]` for ‘head’ and `corners[1]` for ‘tail’
@@ -129,5 +131,9 @@ Prevent properties being accidentally modified or added to the instance.
 
 
 
+
+Prevent properties being accidentally modified or added to the class. 
+
+    oo.lock Location
 
     ;
