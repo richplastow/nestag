@@ -3,7 +3,7 @@
 
     if oo.ROBUSTABLE
       tudor.add [
-        "92 Robust Location Constructor (for modern UAs)"
+        "92 Robust Location Constructor"
         tudor.is
 
 

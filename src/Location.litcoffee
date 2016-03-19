@@ -77,7 +77,7 @@ New Location’s containers. If tags are used, this becomes a ‘sparse array’
         @ancestors = []
 
 
-#### `neighbors <[arrays of Location|null]>`
+#### `neighbors <[[Location|null]]>`
 Other Locations neighboring this one. Does not record diagonals. 
 
 - A 1D Nestag has `neighbors[0]` for ‘previous’ and `neighbors[1]` for ‘next’
@@ -99,7 +99,7 @@ Within each top-level array is a sub-array which works similarly to the
         @neighbors = []
 
 
-#### `corners <[arrays of Location|null]>`
+#### `corners <[[Location|null]]>`
 Locations contained inside this one, positioned at each corner. 
 
 - A 1D Nestag has `corners[0]` for ‘head’ and `corners[1]` for ‘tail’
@@ -122,6 +122,16 @@ Within each top-level array is a sub-array which works similarly to the
         @corners = []
 
 
+#### `totals <[integer]>`
+Total number of Locations contained inside this one. 
+
+- `totals[0]` is the number of Locations contained directly inside this one
+- `totals[1]` is recursive, including all sub-Locations, sub-sub-Locations, etc
+- `totals[55]` is recursive but only includes Locations with tag identifier `55`
+
+        @totals = [0,0]
+
+
 
 
 Prevent properties being accidentally modified or added to the instance. 
@@ -131,23 +141,34 @@ Prevent properties being accidentally modified or added to the instance.
 
 
 
-Public Methods
---------------
+Public B.R.E.A.D. Methods
+-------------------------
 
 
-#### `render()`
-- `yy <number> 123`  @todo describe
-- `<undefined>`      does not return anything
+#### `browse()`
+- `config <object> {}`                            what to show, how to show it
+  - `config.format <string ^text|array$> 'text'`  how to format the output
+  - `config.tags <[integer 2-999999]> []`         only browse certain tags
+  - `config.nest <integer 0-999999> 3`            only browse a certain depth
+- `<string|array>`                                depends on `config.format`
 
 @todo describe
 
-      render: ->
+      browse: (config={}) ->
         M = '/nestag/src/Location.litcoffee
-          Location::render()\n  '
+          Location::browse()\n  '
 
-Check that the arguments are valid, or fallback to defaults if undefined. 
+Check that `config` is valid, and provide fallback values. 
 
-        yy = oo.vArg M, yy, 'yy <number>', 123
+        v = oo.vObject M, 'config', config
+        v 'format <string ^text|array$>', 'text'
+        config.tags = oo.vArray(M + 'config.tags', config.tags, 
+          "<[string #{TAG_RULE}]>", [])
+
+Deal with an empty Location. 
+
+        if ! @totals[1]
+          return if 'array' == config.format then [] else '[empty]'
 
 
 

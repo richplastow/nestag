@@ -3,7 +3,7 @@
 
     if oo.ROBUSTABLE
       tudor.add [
-        "91 Robust Nestag Constructor (for modern UAs)"
+        "91 Robust Nestag Constructor"
         tudor.is
 
 

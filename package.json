@@ -1,6 +1,6 @@
 {
   "name": "nestag",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Multiply linked list with tags, for spatial and nested data",
   "main": "build/nestag.js",
   "directories": {
