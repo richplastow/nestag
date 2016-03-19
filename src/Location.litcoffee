@@ -1,8 +1,6 @@
 Location
 ========
 
-@todo describe in detail
-
 
 #### Represents a populated coordinate within a Nestag instance
 
@@ -12,11 +10,13 @@ Location
 
 
 #### `constructor()`
-- `config <object> {}`                   initial configuration
-  - `config.coord <string>`              new Location’s coordinates
-  - `config.cargo <[any]> [undefined]`   must contain one or more element
-  - `config.tags <[string|integer]> []`  new Location’s tags
-- `<undefined>`                          does not return anything  
+- `config <object> {}`                     initial configuration
+  - `config.coord <string>`                new Location’s coordinates
+  - `config.cargo <[any]> [undefined]`     must contain one or more element
+  - `config.tags <[integer 2-999999]> []`  new Location’s tags
+- `<undefined>`                            does not return anything
+
+@todo describe
 
       constructor: (config={}) ->
         M = '/nestag/src/Location.litcoffee
@@ -30,33 +30,32 @@ Make `v()`, a function for checking that `config` properties are ok.
 
 
 
-Public Properties From `config`
--------------------------------
+Public `config` Properties
+--------------------------
 
 
 #### `coord <string>`
-New Location’s coordinates. @todo describe in detail
+The Location’s coordinates. @todo describe in detail
 
         @coord = v 'coord <string>'
 
 
 #### `cargo <[any]> [undefined]`
-A list of the new Location’s values. Must contain at least one element (even if
+A list of the Location’s values. Must contain at least one element (even if 
 that’s `undefined`). If a Location’s cargo elements are all deleted, the 
 Location itself is deleted. 
 
-        #@cargo = oo.vArray(M + 'config.cargo', config.cargo,
-        #  '<[any]>', [undefined])
+        @cargo = oo.vArray(M + 'config.cargo', config.cargo,
+          '<[any]>', [undefined])
 
 
-#### `tags <[integer]> []`
-New Location’s tags, by identifier. These can be passed in by identifier or by 
-name. Where a name is not recognized, it’s recorded and assigned a globally 
-unique identifier. 
+#### `tags <[integer 2-999999]> []`
+The Location’s tags, by identifier. These must refer to a tag in `global_tags`, 
+and must not refer to the special 'strict' or 'skip' tags (0 and 1). 
 
         @tags = oo.vArray(M + 'config.tags', config.tags,
-          '<[integer 0-999999]>', [])
-        @tags = 123 #@todo convert strings to integers
+          '<[integer 2-999999]>', [])
+        #@todo check for duplicates, check that they refer to actual tags
 
 
 
@@ -128,6 +127,27 @@ Within each top-level array is a sub-array which works similarly to the
 Prevent properties being accidentally modified or added to the instance. 
 
         if 'Location' == @C then oo.lock @
+
+
+
+
+Public Methods
+--------------
+
+
+#### `render()`
+- `yy <number> 123`  @todo describe
+- `<undefined>`      does not return anything
+
+@todo describe
+
+      render: ->
+        M = '/nestag/src/Location.litcoffee
+          Location::render()\n  '
+
+Check that the arguments are valid, or fallback to defaults if undefined. 
+
+        yy = oo.vArg M, yy, 'yy <number>', 123
 
 
 

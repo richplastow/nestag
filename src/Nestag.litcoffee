@@ -1,8 +1,6 @@
 Nestag
 ======
 
-@todo describe
-
 
 #### The main class for Nestag
 
@@ -12,10 +10,12 @@ Nestag
 
 
 #### `constructor()`
-- `config <object> {}`                           initial configuration
-  - `config.grid <[integer 0-999999]1-24> [2,2]` defines dimensions and size
-  - `config.nest <integer 0-999999> 9999`        maximum nest-depth
-- `<undefined>`                                  does not return anything  
+- `config <object> {}`                            initial configuration
+  - `config.grid <[integer 0-999999]1-24> [2,2]`  defines dimensions and size
+  - `config.nest <integer 0-999999> 9999`         maximum nest-depth
+- `<undefined>`                                   does not return anything
+
+@todo describe
 
       constructor: (config={}) ->
         M = '/nestag/src/Nestag.litcoffee

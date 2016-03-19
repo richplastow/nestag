@@ -169,9 +169,11 @@ Get `types` and `rule` from the signature. @todo min and max array sizes
           oo.vArray()\n  signature #{signature} is invalid"
         [signature, types, rule, limit] = matches
 
-Use the fallback, if needed. 
+Use the fallback if needed. Otherwise, make sure we are dealing with an array. 
 
         if ! arr then return fallback
+        if oo.A != oo.type arr then throw RangeError M +
+          " is type #{oo.type arr} not array"
 
 Check the number of elements. 
 
@@ -180,10 +182,11 @@ Check the number of elements.
           if arr.length < min or arr.length > max
             throw RangeError M + ".length is #{arr.length} (must be #{limit})"
 
-Step through each element in `arr`, and get its value’s type. 
+The special 'any' type allows the array to contain anything. 
 
-        if oo.A != oo.type arr then throw RangeError M +
-          " is type #{oo.type arr} not array"
+        if 'any' == types then return arr
+
+Step through each element in `arr`, and get its value’s type. 
 
         for value,i in arr
           tv = oo.type value

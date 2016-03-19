@@ -63,6 +63,50 @@ Prepare a test-instance.
         l.coord
 
 
+      "The `config.cargo` array can contain any type of value"
+      9
+      ->
+        l = new Location { coord:'a', cargo:[123,true,Date,'ok',{a:1},/ok/,null,undefined,Infinity] }
+        l.cargo.length
+
+
+      "The `config.tags` array must contain integers"
+      5
+      ->
+        l = new Location { coord:'a', tags:[6,5,4,3,2] }
+        l.tags.length
+
+
+
+
+      "`config.coord` exceptions"
+
+
+      tudor.throw
+
+
+      "`config.coord` is a number"
+      """
+      /nestag/src/Location.litcoffee Location()
+        config.coord is type number not string"""
+      -> new Location { coord:123 }
+
+
+
+
+      "`config.cargo` exceptions"
+
+
+      tudor.throw
+
+
+      "`config.cargo` is a plain object"
+      """
+      /nestag/src/Location.litcoffee Location()
+        config.cargo is type object not array"""
+      -> new Location { coord:'a', cargo:{} }
+
+
 
 
       "`config.tags` exceptions"
@@ -76,6 +120,41 @@ Prepare a test-instance.
       /nestag/src/Location.litcoffee Location()
         config.tags is type string not array"""
       -> new Location { coord:'b', tags:'nope' }
+
+
+      "`config.tags` contains a regexp"
+      """
+      /nestag/src/Location.litcoffee Location()
+        config.tags[1] is type regexp not integer"""
+      -> new Location { coord:'b', tags:[5, /nope/, 6] }
+
+
+      "`config.tags` contains the number 5.99"
+      """
+      /nestag/src/Location.litcoffee Location()
+        config.tags[3] is a number but not an integer"""
+      -> new Location { coord:'b', tags:[10, 100, 1000, 5.99] }
+
+
+      "`config.tags` contains the integer 1"
+      """
+      /nestag/src/Location.litcoffee Location()
+        config.tags[2] is 1 (must be 2-999999)"""
+      -> new Location { coord:'b', tags:[999999, 654, 1] }
+
+
+      "`config.tags` contains zero"
+      """
+      /nestag/src/Location.litcoffee Location()
+        config.tags[0] is 0 (must be 2-999999)"""
+      -> new Location { coord:'b', tags:[0] }
+
+
+      "`config.tags` contains a million"
+      """
+      /nestag/src/Location.litcoffee Location()
+        config.tags[1] is 1000000 (must be 2-999999)"""
+      -> new Location { coord:'b', tags:[456789, 1000000] }
 
 
 
