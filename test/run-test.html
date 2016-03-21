@@ -31,6 +31,7 @@
 <body>
   <h1>Nestag Test</h1>
   <a href="../index.html">Home</a><br>
-  <script>document.write( Nestag.runTest() );</script>
+  <span id="out"></span>
+  <script>document.getElementById('out').innerHTML = Nestag.runTest();</script>
 </body>
 </html>

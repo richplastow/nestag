@@ -13,7 +13,7 @@
 
 Prepare a test-instance. 
 
-        -> [new Location { coord:'a' }]
+        -> [new Location { nestag:new Nestag, coord:'a' }]
 
 
         "Cannot add a property to the Location class"

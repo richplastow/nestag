@@ -11,6 +11,7 @@ Location
 
 #### `constructor()`
 - `config <object> {}`                     initial configuration
+  - `config.nestag <Nestag>`               new Location’s container
   - `config.coord <string>`                new Location’s coordinates
   - `config.cargo <[any]> [undefined]`     must contain one or more element
   - `config.tags <[integer 2-999999]> []`  new Location’s tags
@@ -32,6 +33,12 @@ Make `v()`, a function for checking that `config` properties are ok.
 
 Public `config` Properties
 --------------------------
+
+
+#### `nestag <Nestag>`
+The Location’s container. @todo describe in detail
+
+        @nestag = v 'nestag <Nestag>'
 
 
 #### `coord <string>`
@@ -150,6 +157,8 @@ Public B.R.E.A.D. Methods
   - `config.format <string ^text|array$> 'text'`  how to format the output
   - `config.tags <[integer 2-999999]> []`         only browse certain tags
   - `config.nest <integer 0-999999> 3`            only browse a certain depth
+  - `config.w <integer 1-999> 79`                 width of 'text' output
+  - `config.h <integer 1-999> 24`                 height of 'text' output
 - `<string|array>`                                depends on `config.format`
 
 @todo describe
@@ -161,14 +170,18 @@ Public B.R.E.A.D. Methods
 Check that `config` is valid, and provide fallback values. 
 
         v = oo.vObject M, 'config', config
-        v 'format <string ^text|array$>', 'text'
-        config.tags = oo.vArray(M + 'config.tags', config.tags, 
-          "<[string #{TAG_RULE}]>", [])
+        format = v 'format <string ^text|array$>', 'text'
+        tags = oo.vArray(M + 'config.tags', config.tags, 
+          "<[integer 2-999999]>", [])
+        nest = v 'nest <integer 0-999999>',  3
+        w    = v 'w <integer 0-999999>'   , 79
+        h    = v 'h <integer 0-999999>'   , 24
 
 Deal with an empty Location. 
 
         if ! @totals[1]
-          return if 'array' == config.format then [] else '[empty]'
+          return if 'array' == format then [] else
+            drawBox(w, h, @coord).join '\n'
 
 
 
@@ -176,5 +189,75 @@ Deal with an empty Location.
 Prevent properties being accidentally modified or added to the class. 
 
     oo.lock Location
+
+
+
+
+Private Functions
+-----------------
+
+These have module-wide scope. Any code in the Nestag module can access them. 
+
+
+#### `drawBorder()`
+- `w <number>`  width
+- `h <number>`  height
+- `<[string]>`  each string in the returned array is a line
+
+@todo describe
+
+    drawBorder = (w, h) ->
+      M = '/Nestag/src/Location.litcoffee
+        drawBorder()\n  '
+
+A box which has a zero or 1 width or height is rendered using spaces. 
+
+      if ! h then return [] # zero height
+      if ! w then return Array(h+1).join('x').split('x') # zero width
+      if 1 == h then return [oo.pad '', w] # Nx1, eg 1x1 is [' ']
+      if 1 == w then return Array(h+1).join(' ').split('') # 1xN
+
+A box 2 characters high only uses the `head` and `foot` lines. 
+
+      head = [ oo.pad('.', w-1, '-') + '.' ]
+      foot = [ oo.pad("'", w-1, '=') + "'" ]
+      if 2 == h then return head.concat foot
+
+A box higher than 2 characters has left and right borders. 
+
+      line =   oo.pad('|', w-1) + '|'
+      body = (line for i in [0..h-3])
+      head.concat body, foot
+
+
+
+
+#### `drawBox()`
+- `w <number>`      width
+- `h <number>`      height
+- `coord <string>`  coordinate
+- `<[string]>`      each string in the returned array is a line
+
+@todo describe
+
+    drawBox = (w, h, coord) ->
+      M = '/Nestag/src/Location.litcoffee
+        drawBox()\n  '
+
+      box = drawBorder w, h
+
+A box which has zero width or height does not show the coordinate. 
+
+      if ! h or ! w then return box
+
+Overlay the coordinate on the box’s center (truncate the coord if necessary). 
+
+      if w < coord.length then coord = coord.substr coord.length - w
+      mid = if 1 == h then 0 else Math.ceil box.length / 2 - 1
+      oo mid
+      box[mid] = oo.insert box[mid], coord, (w - coord.length)/2
+      return box
+
+
 
     ;
