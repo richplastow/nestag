@@ -1,9 +1,9 @@
-92 Robust Location Constructor
+91 Robust Location Constructor
 ==============================
 
     if oo.ROBUSTABLE
       tudor.add [
-        "92 Robust Location Constructor"
+        "91 Robust Location Constructor"
         tudor.is
 
 

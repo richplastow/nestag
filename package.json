@@ -1,6 +1,6 @@
 {
   "name": "nestag",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Multiply linked list with tags, for spatial and nested data",
   "main": "build/nestag.js",
   "directories": {
@@ -18,6 +18,8 @@
   "keywords": [
     "CoffeeScript",
     "Literate CoffeeScript",
+    "Quadtree",
+    "Octree",
     "Linked List",
     "Doubly Linked List",
     "Multiply Linked List",
@@ -25,6 +27,9 @@
     "Nested",
     "2D",
     "3D",
+    "grid",
+    "Spatial Database",
+    "Geodatabase",
     "Data Structure",
     "Tagged"
     ],

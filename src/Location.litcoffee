@@ -77,7 +77,7 @@ New Location’s containers. If tags are used, this becomes a ‘sparse array’
 - `ancestors[0]` is the direct parent of this Location, or `null` if this is the 
   root Location, or if there is no direct parent (a gap in the nested-sequence)
 - `ancestors[1]` is the nearest ancestor (parent, grandparent, etc.) to have 
-  cargo, and therefore, to have a Location instance. `null` if this is the root
+  cargo, and therefore have a Location instance. `null` if this Location is root
 - `ancestors[42]` is the nearest ancestor with tag identifier `42`, or `null` if
   no ancestors have tag identifier `42`
 
@@ -85,7 +85,8 @@ New Location’s containers. If tags are used, this becomes a ‘sparse array’
 
 
 #### `neighbors <[[Location|null]]>`
-Other Locations neighboring this one. Does not record diagonals. 
+Other Locations neighboring this one. Does not include diagonals.  
+@todo consider [Z-order curve](https://en.wikipedia.org/wiki/Z-order_curve)
 
 - A 1D Nestag has `neighbors[0]` for ‘previous’ and `neighbors[1]` for ‘next’
 - A 2D Nestag has `neighbors[0]` for ‘North’, `neighbors[1]` for ‘East’, 
@@ -119,7 +120,7 @@ Within each top-level array is a sub-array which works similarly to the
 `ancestors` array: 
 
 - `corners[7][0]` is the direct lower-South-Western corner inside this Location,
-  or `null` if that corner has no Location is the next nest-level 
+  or `null` if that corner has no Location in the next nest-level 
 - `corners[6][1]` is the nearest lower-South-Eastern corner inside this Location
   to any nested-depth. This can be the Lower-South-Eastern corner of the 
   Lower-South-Eastern corner. `null` if no such Location exists to any depth
@@ -156,12 +157,13 @@ Public B.R.E.A.D. Methods
 - `config <object> {}`                            what to show, how to show it
   - `config.format <string ^text|array$> 'text'`  how to format the output
   - `config.tags <[integer 2-999999]> []`         only browse certain tags
-  - `config.nest <integer 0-999999> 3`            only browse a certain depth
+  - `config.nest <integer 0-999999> 3`            only browse to a certain depth
   - `config.w <integer 1-999> 79`                 width of 'text' output
   - `config.h <integer 1-999> 24`                 height of 'text' output
 - `<string|array>`                                depends on `config.format`
 
-@todo describe
+@todo describe  
+See also `Nestag::browse()`. 
 
       browse: (config={}) ->
         M = '/nestag/src/Location.litcoffee
@@ -171,17 +173,17 @@ Check that `config` is valid, and provide fallback values.
 
         v = oo.vObject M, 'config', config
         format = v 'format <string ^text|array$>', 'text'
-        tags = oo.vArray(M + 'config.tags', config.tags, 
+        tags = oo.vArray(M + 'config.tags', config.tags,
           "<[integer 2-999999]>", [])
         nest = v 'nest <integer 0-999999>',  3
         w    = v 'w <integer 0-999999>'   , 79
         h    = v 'h <integer 0-999999>'   , 24
 
-Deal with an empty Location. 
+Deal with a Location which does not contain any nested sub-Locations. 
 
         if ! @totals[1]
-          return if 'array' == format then [] else
-            drawBox(w, h, @coord).join '\n'
+          return if 'array' == format then [ @coord,[],[] ] else
+            drawBox(w, h, @coord, @cargo).join '\n'
 
 
 
@@ -214,18 +216,18 @@ A box which has a zero or 1 width or height is rendered using spaces.
 
       if ! h then return [] # zero height
       if ! w then return Array(h+1).join('x').split('x') # zero width
-      if 1 == h then return [oo.pad '', w] # Nx1, eg 1x1 is [' ']
+      if 1 == h then return [oo.rpad '', w] # Nx1, eg 1x1 is [' ']
       if 1 == w then return Array(h+1).join(' ').split('') # 1xN
 
 A box 2 characters high only uses the `head` and `foot` lines. 
 
-      head = [ oo.pad('.', w-1, '-') + '.' ]
-      foot = [ oo.pad("'", w-1, '=') + "'" ]
+      head = [ oo.rpad('.', w-1, '-') + '.' ]
+      foot = [ oo.rpad("'", w-1, '=') + "'" ]
       if 2 == h then return head.concat foot
 
 A box higher than 2 characters has left and right borders. 
 
-      line =   oo.pad('|', w-1) + '|'
+      line =   oo.rpad('|', w-1) + '|'
       body = (line for i in [0..h-3])
       head.concat body, foot
 
@@ -236,11 +238,12 @@ A box higher than 2 characters has left and right borders.
 - `w <number>`      width
 - `h <number>`      height
 - `coord <string>`  coordinate
+- `cargo <[any]>`   array of values
 - `<[string]>`      each string in the returned array is a line
 
 @todo describe
 
-    drawBox = (w, h, coord) ->
+    drawBox = (w, h, coord, cargo) ->
       M = '/Nestag/src/Location.litcoffee
         drawBox()\n  '
 
@@ -250,13 +253,50 @@ A box which has zero width or height does not show the coordinate.
 
       if ! h or ! w then return box
 
-Overlay the coordinate on the box’s center (truncate the coord if necessary). 
+Overlay the coordinate (truncate the coord if necessary). 
 
-      if w < coord.length then coord = coord.substr coord.length - w
-      mid = if 1 == h then 0 else Math.ceil box.length / 2 - 1
-      oo mid
-      box[mid] = oo.insert box[mid], coord, (w - coord.length)/2
+      if w < coord.length
+        coord = coord.substr coord.length - w
+        pos = 0
+      else
+        pos = Math.ceil(w / 2 - coord.length / 2)
+      #box[mid] = oo.insert box[mid], coord, (w - coord.length)/2
+      #box[0] = oo.insert box[0], coord, if w > coord.length then 1 else 0
+      box[0] = oo.insert box[0], coord, pos
+
+For larger boxes, summarize the cargo and tags. 
+
+      if h > 3 and w > 16
+        summary = []
+        lut     = {} # lookup-table for `summary`
+        max     = 1
+        for value in cargo
+          key = if null == value then 'x' else oo.type(value).charAt 0
+          if 'o' == key and value.C then key = value.C.charAt 0
+          item = lut[key]
+          if item
+            item.tally++
+            max = Math.max( item.tally.toString().length )
+          else
+            summary.push lut[key] = { key:key, tally:1 }
+        line = 1
+        for item,i in summary
+          box[line] = oo.insert box[line], item.key + oo.lpad(item.tally+'',max) + ':', 1
+          line++
+          if h == line + 2 and summary[i+1] and summary.length != h-2 #@todo refactor
+            box[line] = oo.insert box[line], oo.lpad('',max+1,'.'), 1
+            line++
+            break
+
+Fill in remaining parts of the vertical line. 
+
+        box[0]   = oo.insert box[0]  , '.', max+2
+        box[j]   = oo.insert(box[j]  , ':', max+2) for j in [line..h-2]
+        box[h-1] = oo.insert box[h-1], "'", max+2
+
+
       return box
+
 
 
 

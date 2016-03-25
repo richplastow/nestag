@@ -64,9 +64,15 @@ Create `@[oo._]`, a non-enumerable property with an unguessable name.
 
 
 #### `_locations <object>`
-Contains all Location instances currently held by this Nestag instance. 
+Location instances currently held by this Nestag instance, with coords as keys. 
 
         @[oo._]._locations = {}
+
+
+#### `_totalLocations <integer>`
+The number of Nestag instances in `_locations`. 
+
+        @[oo._]._totalLocations = 0
 
 
 
@@ -82,9 +88,79 @@ Public B.R.E.A.D. Methods
 -------------------------
 
 
-      #@todo
+#### `browse()`
+- `config <object> {}`                            what to show, how to show it
+  - `config.coord <string> ''`                    the outermost Location to show
+  - `config.format <string ^text|array$> 'text'`  how to format the output
+  - `config.tags <[integer 2-999999]> []`         only browse certain tags
+  - `config.nest <integer 0-999999> 3`            only browse to a certain depth
+  - `config.w <integer 1-999> 79`                 width of 'text' output
+  - `config.h <integer 1-999> 24`                 height of 'text' output
+- `<string|array>`                                depends on `config.format`
+
+@todo describe  
+See also `Location::browse()`. 
+
+      browse: (config={}) ->
+        M = '/nestag/src/Nestag.litcoffee
+          Nestag::browse()\n  '
+
+Begin checking that `config` is valid. The Location will check that the rest of 
+`config` is valid, and provide the remaining fallback values. 
+
+        v = oo.vObject M, 'config', config
+        coord = v "coord <string #{COORD_RULE}>", ''
+        location = @[oo._]._locations[coord]
+        if ! location then throw RangeError M + "
+          coord '#{coord}' does not exist"
+
+Return the `browse()` result from the Location specified by `coord`. 
+
+        location.browse config
 
 
+
+
+#### `add()`
+- `config <object> {}`                  what to add, where to add it
+  - `config.coord <string> ''`          a Location to add the cargo to
+  - `config.cargo <[any]> [undefined]`  an array of values to add
+  - `config.tags <[string]> []`         optional labels for the Location
+- `<string>`                            coord of the cargo’s Location
+
+@todo describe  
+
+      add: (config={}) ->
+        M = '/nestag/src/Nestag.litcoffee
+          Nestag::add()\n  '
+
+Check that `config` is valid, and provide fallback values. 
+
+        v = oo.vObject M, 'config', config
+        coord = v "coord <string #{COORD_RULE}>", ''
+        cargo = oo.vArray(M + 'config.cargo', config.cargo 
+          "<[any]>", [undefined])
+        tags = oo.vArray(M + 'config.tags', config.tags,
+          "<[string #{TAG_RULE}]>", [])
+
+Create a numeric identifier for unrecognized tags. 
+
+        #@todo
+
+Add the cargo to the specified Location. Create a Location at the specified 
+coord if it does not already exist. 
+
+        location = @[oo._]._locations[coord]
+        if location
+          location.add { cargo:cargo }
+        else
+          location = new Location { nestag:@, coord:coord, cargo:cargo }#@todo tags
+          @[oo._]._locations[coord] = location
+          @[oo._]._totalLocations++
+
+Return the same coord that was passed in. 
+
+        coord
 
 
     ;

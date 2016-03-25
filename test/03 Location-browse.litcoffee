@@ -12,7 +12,12 @@
 
 Prepare a test-instance. 
 
-      -> [ new Location { nestag:new Nestag, coord:'abc'} ]
+      ->
+        [ new Location
+          nestag: new Nestag
+          coord:  'abc'
+          cargo:  [ null,new Nestag,{},{},8].concat [1..200]
+        ]
 
 
       "`browse()` is a function"
@@ -35,39 +40,39 @@ Prepare a test-instance.
       tudor.equal
 
 
-      "For an empty Location instance, `browse()` returns an empty box"
+      "For a Location with no Sub-Locations, `browse()` returns a box as expected"
       """
-      .-----------------------------------------------------------------------------.
-      |                                                                             |
-      |                                                                             |
-      |                                                                             |
-      |                                                                             |
-      |                                                                             |
-      |                                                                             |
-      |                                                                             |
-      |                                                                             |
-      |                                                                             |
-      |                                                                             |
-      |                                     abc                                     |
-      |                                                                             |
-      |                                                                             |
-      |                                                                             |
-      |                                                                             |
-      |                                                                             |
-      |                                                                             |
-      |                                                                             |
-      |                                                                             |
-      |                                                                             |
-      |                                                                             |
-      |                                                                             |
-      '============================================================================='
+      .----.--------------------------------abc-------------------------------------.
+      |x  1:                                                                        |
+      |N  1:                                                                        |
+      |o  2:                                                                        |
+      |n201:                                                                        |
+      |    :                                                                        |
+      |    :                                                                        |
+      |    :                                                                        |
+      |    :                                                                        |
+      |    :                                                                        |
+      |    :                                                                        |
+      |    :                                                                        |
+      |    :                                                                        |
+      |    :                                                                        |
+      |    :                                                                        |
+      |    :                                                                        |
+      |    :                                                                        |
+      |    :                                                                        |
+      |    :                                                                        |
+      |    :                                                                        |
+      |    :                                                                        |
+      |    :                                                                        |
+      |    :                                                                        |
+      '===='========================================================================'
       """
       (location) ->
         location.browse()
 
 
       "...and `browse({format:'array'})` returns an empty array"
-      0
+      3
       (location) ->
         location.browse({format:'array'}).length
 
@@ -127,9 +132,9 @@ Prepare a test-instance.
 
       "A 2x5 box as expected"
       """
-      ..
-      ||
       bc
+      ||
+      ||
       ||
       ''"""
       (location) ->
@@ -138,12 +143,71 @@ Prepare a test-instance.
 
       "A 4x4 box as expected"
       """
-      .--.
-      abc|
+      .abc
+      |  |
       |  |
       '=='"""
       (location) ->
         location.browse({w:4, h:4})
+
+
+      "A 4x16 box as expected - too narrow for cargo/tags display"
+      """
+      .------abc-----.
+      |              |
+      |              |
+      '=============='
+      """
+      (location) ->
+        location.browse({w:16, h:4})
+
+
+      "A 3x17 box as expected - not high enough for cargo/tags display"
+      """
+      .------abc------.
+      |               |
+      '==============='
+      """
+      (location) ->
+        location.browse({w:17, h:3})
+
+
+      "A 4x17 box as expected - just big enough to show partial cargo"
+      """
+      .----.-abc------.
+      |x  1:          |
+      |....:          |
+      '===='=========='
+      """
+      (location) ->
+        location.browse({w:17, h:4})
+
+
+      "A 6x17 box as expected - just big enough to show all cargo (no tags exist)"
+      """
+      .----.-abc------.
+      |x  1:          |
+      |N  1:          |
+      |o  2:          |
+      |n201:          |
+      '===='=========='
+      """
+      (location) ->
+        location.browse({w:17, h:6})
+
+
+      "A 7x17 box as expected - all cargo and one line of space (no tags exist)"
+      """
+      .----.-abc------.
+      |x  1:          |
+      |N  1:          |
+      |o  2:          |
+      |n201:          |
+      |    :          |
+      '===='=========='
+      """
+      (location) ->
+        location.browse({w:17, h:7})
 
 
 

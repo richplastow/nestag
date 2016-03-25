@@ -22,6 +22,12 @@ Used for validating `tags` arguments.
     TAG_RULE = '^[a-z]\\w{1,23}$'
 
 
+#### `COORD_RULE <string>`
+Used for validating `coord` arguments. 
+
+    COORD_RULE = '^[a-z]{0,999999}$'
+
+
 
 
     ;

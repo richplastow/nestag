@@ -98,10 +98,19 @@ Xx optional prefix. @todo description
 
 
 
-#### `oo.pad()`
+#### `oo.lpad()`
 Xx. @todo description
 
-    oo.pad = (s, l, c=' ') ->
+    oo.lpad = (s, l, c=' ') ->
+      Array(l-s.length+1).join(c) + s
+
+
+
+
+#### `oo.rpad()`
+Xx. @todo description
+
+    oo.rpad = (s, l, c=' ') ->
       s + Array(l-s.length+1).join(c)
 
 
