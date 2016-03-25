@@ -40,15 +40,30 @@ Prepare a test-instance.
 
 
 
-      "Instance properties as expected"
+      "Default instance properties as expected"
 
 
       tudor.equal
 
 
+      "`Nestag::grid` is the array `[2,2]`"
+      '2x2'
+      (nestag) -> nestag.grid.join 'x'
+
+
       "`Nestag::nest` is the number `9999`"
       9999
       (nestag) -> nestag.nest
+
+
+      "`Nestag::scheme` is the string 'continuous'"
+      'continuous'
+      (nestag) -> nestag.scheme
+
+
+      "`Nestag::form` is the string 'short'"
+      'short'
+      (nestag) -> nestag.form
 
 
       "`Nestag::_locations` is private, and is an empty object"
@@ -62,10 +77,10 @@ Prepare a test-instance.
 
 
       "`config.grid` takes an array of integers"
-      '3,3,3'
+      '3x3x3'
       ->
         n = new Nestag { grid:[3,3,3] }
-        n.grid.join ','
+        n.grid.join 'x'
 
 
       "`config.nest` takes an integer"
@@ -80,6 +95,22 @@ Prepare a test-instance.
       ->
         n = new Nestag { nest:0 }
         n.nest
+
+
+      "`config.scheme` can be 'continuous' or 'dimensional'"
+      'continuous or dimensional'
+      ->
+        n1 = new Nestag { scheme:'continuous' }
+        n2 = new Nestag { scheme:'dimensional' }
+        n1.scheme + ' or ' + n2.scheme
+
+
+      "`config.form` can be 'long' or 'short'"
+      'long or short'
+      ->
+        n1 = new Nestag { form:'long' }
+        n2 = new Nestag { form:'short' }
+        n1.form + ' or ' + n2.form
 
 
 
@@ -121,15 +152,15 @@ Prepare a test-instance.
       "`config.grid` is empty"
       """
       /nestag/src/Nestag.litcoffee Nestag()
-        config.grid.length is 0 (must be 1-24)"""
+        config.grid.length is 0 (must be 1-99)"""
       -> new Nestag { grid:[] }
 
 
       "`config.grid` has too many elements"
       """
       /nestag/src/Nestag.litcoffee Nestag()
-        config.grid.length is 25 (must be 1-24)"""
-      -> new Nestag { grid:[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2] }
+        config.grid.length is 100 (must be 1-99)"""
+      -> new Nestag { grid:[1..100] }
 
 
 
@@ -166,6 +197,50 @@ Prepare a test-instance.
       /nestag/src/Nestag.litcoffee Nestag()
         config.nest is 1000000 (must be 0-999999)"""
       -> new Nestag { nest:1000000 }
+
+
+
+
+      "`config.scheme` exceptions"
+
+
+      tudor.throw
+
+
+      "`config.scheme` is a regexp"
+      """
+      /nestag/src/Nestag.litcoffee Nestag()
+        config.scheme is type regexp not string"""
+      -> new Nestag { scheme:/continuous/ }
+
+
+      "`config.scheme` is not a valid keyword (should be lowercase)"
+      """
+      /nestag/src/Nestag.litcoffee Nestag()
+        config.scheme fails ^continuous|dimensional$"""
+      -> new Nestag { scheme:'CONTINUOUS' }
+
+
+
+
+      "`config.form` exceptions"
+
+
+      tudor.throw
+
+
+      "`config.form` is an array"
+      """
+      /nestag/src/Nestag.litcoffee Nestag()
+        config.form is type array not string"""
+      -> new Nestag { form:['l','o','n','g'] }
+
+
+      "`config.scheme` is not a valid keyword (should be lowercase)"
+      """
+      /nestag/src/Nestag.litcoffee Nestag()
+        config.form fails ^short|long$"""
+      -> new Nestag { form:'Long' }
 
 
 

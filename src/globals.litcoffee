@@ -25,7 +25,7 @@ Used for validating `tags` arguments.
 #### `COORD_RULE <string>`
 Used for validating `coord` arguments. 
 
-    COORD_RULE = '^[a-z]{0,999999}$'
+    COORD_RULE = '^[a-z]{0,9999}$'
 
 
 

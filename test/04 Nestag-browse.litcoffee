@@ -139,7 +139,7 @@ abc|
       "coord must be valid"
       """
       /nestag/src/Nestag.litcoffee Nestag::browse()
-        config.coord fails ^[a-z]{0,999999}$"""
+        config.coord fails ^[a-z]{0,9999}$"""
       (nestag) -> nestag.browse { coord:'!' }
 
 

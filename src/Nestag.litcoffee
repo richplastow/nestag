@@ -11,8 +11,10 @@ Nestag
 
 #### `constructor()`
 - `config <object> {}`                            initial configuration
-  - `config.grid <[integer 0-999999]1-24> [2,2]`  defines dimensions and size
+  - `config.grid <[integer 0-999999]1-99> [2,2]`  defines dimensions and size
   - `config.nest <integer 0-999999> 9999`         maximum nest-depth
+  - `config.scheme <string> 'continuous'`         the coordinate-scheme
+  - `config.form <string> 'short'`                use long-form or short-form
 - `<undefined>`                                   does not return anything
 
 @todo describe
@@ -33,7 +35,7 @@ Public Properties
 -----------------
 
 
-#### `grid <[integer 0-999999]1-24> [null]`
+#### `grid <[integer 0-999999]1-99> [null]`
 One integer per dimension. If the integer is zero, there is no fixed number of 
 locations in that direction @todo how does that work with coords? If the integer
 is greater than 0, it defines the grid extent in that direction. 
@@ -41,7 +43,7 @@ is greater than 0, it defines the grid extent in that direction.
 The default is a 2D grid where each Location has four sub-Locations, `[2,2]`. 
 
         @grid = oo.vArray(M + 'config.grid', config.grid,
-          '<[integer 0-999999]1-24>', [2,2])
+          '<[integer 0-999999]1-99>', [2,2])
 
 
 #### `nest <integer> 9999`
@@ -51,6 +53,27 @@ some point. Setting `nest` to 0 prevents any nesting, so only the top-level
 Location can be used. 
 
         @nest = v 'nest <integer 0-999999>', 9999
+
+
+#### `scheme <string ^continuous|dimensional$> 'continuous'`
+'continuous' assigns the origin coord 'a', and then proceeds in a z-order curve 
+with 'b', 'c', 'd' etc. If more than 26 coords are needed, two or more chars are
+used, so the origin is 'aa', followed by 'ab', 'ac' ... 'az', 'ba', etc.  
+'dimensional' uses one character per dimension. The origin of a 3D grid is 
+'a,a,a', and its adjacent coords are 'b,a,a', 'a,b,a' and 'a,a,b' (long-form). 
+Short-form of these coords is 'aaa', 'baa', 'aba' and 'aab'. If any dimension 
+has more than 26 divisions, two or more characters are used, eg 'qj,m,znhi'. 
+
+        @scheme = v 'scheme <string ^continuous|dimensional$>', 'continuous'
+
+
+#### `form <string ^short|long$> 'short'`
+Long-form uses commas and slashes to make coordinates easier to read, eg for a 
+2x2x2 grid with 'dimensional' scheme, 'a,a,a/b,b,b' is the long-form coord of 
+the short-form coord 'aaabbb'. The equivalent coord in the 'continuous' scheme 
+is 'a/h' in long-form, or 'ah' in short-form. 
+
+        @form = v 'form <string ^short|long$>', 'short'
 
 
 
@@ -79,7 +102,9 @@ The number of Nestag instances in `_locations`.
 
 Prevent properties being accidentally modified or added to the instance. 
 
-        if 'Nestag' == @C then oo.lock @
+        if 'Nestag' == @C
+          oo.lock @grid # prevent array elements being changed
+          oo.lock @
 
 
 
